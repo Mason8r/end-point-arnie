@@ -7,6 +7,15 @@
     <title>End Point Arnie</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <style>
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+            background: white url(assets/img/background.jpg) bottom right no-repeat;
+            background-size: 20%;
+            background-attachment: fixed;
+        }
         .request {
             border: 1px solid #eee;
             border-radius: 10px;
@@ -18,15 +27,15 @@
 <body>
     <div class="container">
         <header class="row">
-            <h1>End Point Arnie</h1>
+            <div class="col-md-6">
+                <h1>End Point Arnie</h1>
+            </div>
         </header>
         <div id="main" class="row">
             @yield('content')
         </div>
-        <footer class="row">
-           <div class="text-center"><small>Thrown together by <a href="https://twitter.com/masonator/" target="_blank">@masonator</a></small></div>
-        </footer>
     </div>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </body>
 </html>

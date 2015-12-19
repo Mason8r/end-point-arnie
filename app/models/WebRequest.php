@@ -9,6 +9,6 @@ class WebRequest extends Eloquent {
 	 */
 	protected $table = 'requests';
 
-	protected $fillable = ['payload','server'];
+	protected $fillable = ['payload','server','name'];
 
 }
