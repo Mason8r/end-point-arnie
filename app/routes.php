@@ -5,63 +5,19 @@
 | Application Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the Closure to execute when that URI is requested.
+| 1. Store data in a database - Done!
+| 2. Add a view to the buckets using Blade - Done!
+| 3. Split the buckets up for different users
+| 4. Empty that database nightly!
 |
 */
-
 Route::match(array('GET', 'POST'),'/', function()
 {
 	if(Input::has('inspect')) {
-
-		$tests = file_get_contents('end-point-arnie');
-		$array = array_reverse(explode(PHP_EOL,$tests));
-		foreach ($array as $request) {
-			if(strlen($request) > 0) {
-				$data = unserialize($request);
-				foreach ($data as $key => $value) {
-					if($key == 'time' ) {
-						$value = date('l d F g.ia',$value);
-					}
-
-					if(is_array($value) || is_object($value)) {
-						var_dump($value);
-					} else {
-						echo "<strong>".$key .":</strong> ".$value."<br />";
-					}
-				}
-			}
-		}
-
+		$web_requests = WebRequest::orderBy('created_at', 'desc')->get();
+		return View::make('home' , ['web_requests' => $web_requests]);
 	} else {
-
-		if($_SERVER['CONTENT_TYPE'] != 'application/json') {
-			if($_POST) {
-				$body_content = $_POST;
-			} else {
-				$body_content = file_get_contents('php://input');
-			}
-		} else {
-			$body_content = json_decode(file_get_contents('php://input'));
-		}
-
-		$request = [
-			'method' => $_SERVER['REQUEST_METHOD'],
-			'content_type' => $_SERVER['CONTENT_TYPE'],
-			'content_length' => $_SERVER['CONTENT_LENGTH'],
-			'request_uri' => $_SERVER['REQUEST_URI'],
-			'protocol' => $_SERVER['SERVER_PROTOCOL'],
-			'remote_address' => $_SERVER['REMOTE_ADDR'],
-			'remote_port' => $_SERVER['REMOTE_PORT'],
-			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-			'time' => $_SERVER['REQUEST_TIME'],
-			'body' => $body_content,
-		];
-		$store_payload = file_put_contents('end-point-arnie', serialize($request).PHP_EOL, FILE_APPEND);
-		if($store_payload) {
-			echo 'success';
-		}	
+		WebRequest::create(['payload' => serialize(Request::all()), 'server' => serialize(Request::server())]);
+		return Response::json(['status' => 'success', 'payload' => Request::all()], 200);
 	}
-
 });
