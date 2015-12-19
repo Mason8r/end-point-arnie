@@ -4,7 +4,16 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 	$tests = file_get_contents('end-point-arnie');
 	echo $tests;
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$body_content = file_get_contents('php://input');
+	
+	if($_SERVER['CONTENT_TYPE'] != 'application/json') {
+		if($_POST) {
+			$body_content = json_encode($_POST);
+		} else {
+			$body_content = json_encode(file_get_contents('php://input'));
+		}
+	} else {
+		$body_content = file_get_contents('php://input');
+	}
 	$time = date('l d F g.ia',$_SERVER['REQUEST_TIME']);
 	$request = "<div class='new-request'><h4>New payload recieved at {$time}</h4><ul><li>HTTP User Agent: {$_SERVER['HTTP_USER_AGENT']}</li><li>Remote Address: {$_SERVER['REMOTE_ADDR']}</li><li>Content Type: {$_SERVER['CONTENT_TYPE']}</li></ul></div>";
 	$full = $request . '<br /><pre>' . $body_content . '</pre><hr />';
